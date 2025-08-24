@@ -70,9 +70,21 @@ alias yrd="yarn dev"
 alias yrs="yarn start"
 alias yrb="yarn build"
 alias yrt="yarn test"
+
+# Angular CLI shortcuts
 alias ngserve="ng serve"
 alias ngbuild="ng build"
 alias ngtest="ng test"
+alias ngg="ng generate"
+alias ngc="ng generate component"
+alias ngs="ng generate service"
+alias ngm="ng generate module"
+alias ngl="ng lint"
+alias ngcp="ng generate component --skip-tests=false --style=scss"
+alias ngcs="ng generate component --skip-tests=true --inline-template=true"
+alias ngu="ng update"
+alias nga="ng add"
+alias nganalyze="ng build --stats-json && npx webpack-bundle-analyzer dist/stats.json"
 
 # Python
 alias py="python3"
@@ -102,10 +114,81 @@ alias devupdate="workflow update"
 alias newfeature="workflow feature"
 alias smartcommit="workflow commit"
 
+# Angular workflow shortcuts
+alias ngcheck="workflow ng-check"
+alias ngdev="workflow ng-start"
+alias ngdeploy="workflow ng-deploy"
+
 # Quick tmux shortcuts
 alias tnew="tmux new-session -s"
 alias tlist="tmux list-sessions"
 alias tattach="tmux attach-session -t"
+
+# Angular workflow functions
+ngstart() {
+  echo "Starting Angular development environment..."
+  echo "Opening development server..."
+  ng serve --open &
+  echo "Starting tests in watch mode..."
+  npm run test &
+  echo "Angular dev environment started!"
+}
+
+ngnew() {
+  if [ -z "$1" ]; then
+    echo "Usage: ngnew <project-name> [options]"
+    echo "Example: ngnew my-app --routing --style=scss"
+    return 1
+  fi
+  echo "Creating new Angular project: $1"
+  ng new "$@" --package-manager=npm --skip-git=false
+  cd "$1"
+  echo "Project created! Running initial setup..."
+  npm install
+  echo "Opening project..."
+  code . || nvim .
+}
+
+ngfeat() {
+  if [ -z "$1" ]; then
+    echo "Usage: ngfeat <feature-name>"
+    echo "This will create a feature module with routing and a main component"
+    return 1
+  fi
+  echo "Creating feature module: $1"
+  ng generate module "features/$1" --routing
+  ng generate component "features/$1"
+  echo "Feature module '$1' created successfully!"
+}
+
+ngdeploy() {
+  echo "Building for production..."
+  ng build --configuration=production
+  if [ $? -eq 0 ]; then
+    echo "Production build successful!"
+    echo "Build output is in: dist/"
+  else
+    echo "Build failed!"
+    return 1
+  fi
+}
+
+ngcheck() {
+  echo "Running Angular project health check..."
+  echo "1. Checking Angular CLI version..."
+  ng version --skip-git
+  echo ""
+  echo "2. Running linting..."
+  ng lint
+  echo ""
+  echo "3. Running tests..."
+  ng test --watch=false --browsers=ChromeHeadless
+  echo ""
+  echo "4. Building for production..."
+  ng build --configuration=production
+  echo ""
+  echo "Angular project health check complete!"
+}
 
 # FZF configuration
 export FZF_DEFAULT_COMMAND='fd --type f --hidden --follow --exclude .git'
