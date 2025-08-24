@@ -41,11 +41,18 @@ show_help() {
     echo "  tmux        - Start/manage tmux sessions"
     echo "  project     - Quick project setup"
     echo
+    echo "Angular Commands:"
+    echo "  angular-check   - Run Angular project health check"
+    echo "  angular-start   - Start Angular development server"
+    echo "  angular-deploy  - Build and prepare for deployment"
+    echo "  (shortcuts: ng-check, ng-start, ng-deploy)"
+    echo
     echo "Examples:"
     echo "  $0 morning"
     echo "  $0 feature user-authentication"
     echo "  $0 commit 'feat: add user login functionality'"
-    echo "  $0 cleanup"
+    echo "  $0 ng-check"
+    echo "  $0 ng-start"
 }
 
 # Morning routine
@@ -394,6 +401,121 @@ app.listen(PORT, () => {
     log "Run 'git init' to initialize Git repository"
 }
 
+# Angular-specific workflow functions
+angular_check() {
+    log "Running Angular project health check..."
+    
+    # Check if we're in an Angular project
+    if [ ! -f "angular.json" ]; then
+        error "Not in an Angular project directory"
+        exit 1
+    fi
+    
+    # Check Angular CLI version
+    log "Angular CLI version:"
+    ng version --skip-git
+    
+    # Check for outdated packages
+    log "Checking for outdated packages..."
+    npm outdated
+    
+    # Run linting
+    log "Running ESLint..."
+    if npm run lint >/dev/null 2>&1; then
+        echo "Linting: PASSED"
+    else
+        echo "Linting: FAILED"
+    fi
+    
+    # Run tests
+    log "Running unit tests..."
+    if npm run test -- --watch=false --browsers=ChromeHeadless >/dev/null 2>&1; then
+        echo "Tests: PASSED"
+    else
+        echo "Tests: FAILED"
+    fi
+    
+    # Check build
+    log "Testing production build..."
+    if ng build --configuration=production >/dev/null 2>&1; then
+        echo "Build: PASSED"
+        rm -rf dist/  # Clean up build artifacts
+    else
+        echo "Build: FAILED"
+    fi
+    
+    log "Angular project health check complete!"
+}
+
+angular_start() {
+    log "Starting Angular development environment..."
+    
+    if [ ! -f "angular.json" ]; then
+        error "Not in an Angular project directory"
+        exit 1
+    fi
+    
+    # Install dependencies if node_modules doesn't exist
+    if [ ! -d "node_modules" ]; then
+        log "Installing dependencies..."
+        npm install
+    fi
+    
+    log "Starting development server..."
+    echo "Development server will start at http://localhost:4200"
+    echo "Use Ctrl+C to stop the server"
+    
+    # Start development server
+    ng serve --open
+}
+
+angular_deploy() {
+    log "Preparing Angular app for deployment..."
+    
+    if [ ! -f "angular.json" ]; then
+        error "Not in an Angular project directory"
+        exit 1
+    fi
+    
+    # Run tests first
+    log "Running tests..."
+    npm run test -- --watch=false --browsers=ChromeHeadless
+    
+    if [ $? -ne 0 ]; then
+        error "Tests failed! Fix tests before deploying."
+        exit 1
+    fi
+    
+    # Run linting
+    log "Running linting..."
+    npm run lint
+    
+    if [ $? -ne 0 ]; then
+        error "Linting failed! Fix linting errors before deploying."
+        exit 1
+    fi
+    
+    # Build for production
+    log "Building for production..."
+    ng build --configuration=production
+    
+    if [ $? -eq 0 ]; then
+        log "Production build successful!"
+        log "Build output is in: dist/"
+        
+        # Show build size
+        if [ -d "dist" ]; then
+            echo "Build size:"
+            du -sh dist/*
+        fi
+        
+        log "Ready for deployment!"
+    else
+        error "Production build failed!"
+        exit 1
+    fi
+}
+
 # Main script logic
 case "${1:-}" in
     morning)
@@ -419,6 +541,15 @@ case "${1:-}" in
         ;;
     project)
         project
+        ;;
+    angular-check|ng-check)
+        angular_check
+        ;;
+    angular-start|ng-start)
+        angular_start
+        ;;
+    angular-deploy|ng-deploy)
+        angular_deploy
         ;;
     *)
         show_help
