@@ -28,21 +28,21 @@ end, {
 
 vim.api.nvim_create_user_command("CopilotCheck", function()
   if vim.fn.exists(":Copilot") ~= 2 then
-    print("❌ Copilot plugin not available")
+    print("Copilot plugin not available")
     return
   end
   
   if vim.fn.exists("*copilot#Enabled") == 1 then
     local enabled = vim.fn["copilot#Enabled"]()
     if enabled == 1 then
-      print("✅ Copilot is enabled and ready")
+      print("Copilot is enabled and ready")
     else
-      print("⚠️  Copilot is available but not enabled. Run :Copilot setup")
+      print("Copilot is available but not enabled. Run :Copilot setup")
     end
   else
-    print("⚠️  Copilot commands available but status functions not loaded yet")
+    print("Copilot commands available but status functions not loaded yet")
   end
-  7305-DFF3
+  
   vim.cmd("Copilot status")
 end, {
   desc = "Check GitHub Copilot status",

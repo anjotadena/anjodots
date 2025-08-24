@@ -137,7 +137,7 @@ rm -rf ~/.cache/nvim
 
 echo "Cloning LazyVim starter..."
 if ! git clone https://github.com/LazyVim/starter ~/.config/nvim; then
-  echo "✗ Failed to clone LazyVim starter"
+  echo "Failed to clone LazyVim starter"
   return 1
 fi
 
@@ -154,7 +154,7 @@ cp -f $DOTFILES_DIR/nvim/lua/plugins/dev.lua ~/.config/nvim/lua/plugins/
 
 # Ensure config files exist
 if [ ! -f ~/.config/nvim/lua/config/lazy.lua ]; then
-  echo "✗ Failed to copy lazy.lua configuration"
+  echo "Failed to copy lazy.lua configuration"
   return 1
 fi
 
@@ -219,6 +219,36 @@ if [[ $update_git =~ ^[Yy]$ ]]; then
   fi
 else
   echo "Git configuration skipped."
+fi
+
+# --- Workflow Helper Installation ---
+echo ""
+echo "Installing workflow helper script..."
+if cp -f "$DOTFILES_DIR/workflow.sh" "$HOME/bin/workflow" 2>/dev/null; then
+  chmod +x "$HOME/bin/workflow"
+  echo "Workflow helper installed as 'workflow' command"
+  echo "  Usage: workflow morning, workflow status, workflow cleanup, etc."
+elif cp -f "$DOTFILES_DIR/workflow.sh" "$HOME/.local/bin/workflow" 2>/dev/null; then
+  chmod +x "$HOME/.local/bin/workflow"
+  echo "Workflow helper installed as 'workflow' command"
+  echo "  Usage: workflow morning, workflow status, workflow cleanup, etc."
+else
+  echo "Could not install workflow helper to bin directory"
+  echo "  You can run it directly: ./workflow.sh"
+fi
+
+# --- Install Debugging Tools ---
+echo ""
+echo "Installing debugging tools..."
+if cp -f "$DOTFILES_DIR/nvim-check.sh" "$HOME/bin/nvim-check" 2>/dev/null; then
+  chmod +x "$HOME/bin/nvim-check"
+  echo "Neovim checker installed as 'nvim-check' command"
+elif cp -f "$DOTFILES_DIR/nvim-check.sh" "$HOME/.local/bin/nvim-check" 2>/dev/null; then
+  chmod +x "$HOME/.local/bin/nvim-check"
+  echo "Neovim checker installed as 'nvim-check' command"
+else
+  echo "Could not install nvim-check to bin directory"
+  echo "  You can run it directly: ./nvim-check.sh"
 fi
 
 echo ""

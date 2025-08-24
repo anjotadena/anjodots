@@ -94,6 +94,19 @@ alias dcbuild="docker-compose build"
 alias dps="docker ps"
 alias dlogs="docker logs"
 
+# Daily workflow shortcuts
+alias morning="workflow morning"
+alias devstatus="workflow status"
+alias devcleanup="workflow cleanup"
+alias devupdate="workflow update"
+alias newfeature="workflow feature"
+alias smartcommit="workflow commit"
+
+# Quick tmux shortcuts
+alias tnew="tmux new-session -s"
+alias tlist="tmux list-sessions"
+alias tattach="tmux attach-session -t"
+
 # FZF configuration
 export FZF_DEFAULT_COMMAND='fd --type f --hidden --follow --exclude .git'
 export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
