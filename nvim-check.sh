@@ -67,4 +67,12 @@ done
 
 echo
 echo "Configuration check complete!"
+echo ""
+echo "IMPORTANT: If this is your first time using this Neovim configuration:"
+echo "1. Start Neovim normally: 'nvim .'"
+echo "2. LazyVim will automatically install all plugins (including Telescope)"
+echo "3. Wait for all plugins to install (may take a few minutes)"
+echo "4. Restart Neovim after installation is complete"
+echo "5. ESC key should now work properly in Telescope (Space + Space to test)"
+echo ""
 echo "If any errors were found, check the DEBUG.md file for troubleshooting tips."
