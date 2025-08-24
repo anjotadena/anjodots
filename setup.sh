@@ -148,6 +148,55 @@ ln -sf $DOTFILES_DIR/.zshrc ~/.zshrc
 ln -sf $DOTFILES_DIR/.tmux.conf ~/.tmux.conf
 ln -sf $DOTFILES_DIR/.tmux.theme.conf ~/.tmux.theme.conf
 
+# --- Git Configuration (Optional) ---
+echo ""
+echo "=== Git Configuration ==="
+current_name=$(git config --global user.name 2>/dev/null || echo "")
+current_email=$(git config --global user.email 2>/dev/null || echo "")
+
+if [ -n "$current_name" ] && [ -n "$current_email" ]; then
+  echo "Current git configuration:"
+  echo "  Name:  $current_name"
+  echo "  Email: $current_email"
+  echo ""
+  read -p "Do you want to update your git configuration? (y/N): " update_git
+else
+  echo "No git user configuration found."
+  read -p "Do you want to configure git user information? (y/N): " update_git
+fi
+
+if [[ $update_git =~ ^[Yy]$ ]]; then
+  echo ""
+  read -p "Enter your full name: " git_name
+  read -p "Enter your email address: " git_email
+  
+  if [ -n "$git_name" ] && [ -n "$git_email" ]; then
+    git config --global user.name "$git_name"
+    git config --global user.email "$git_email"
+    
+    # Optional: Set some useful git defaults
+    echo ""
+    read -p "Set recommended git defaults? (default branch: main, pull rebase) (y/N): " git_defaults
+    if [[ $git_defaults =~ ^[Yy]$ ]]; then
+      git config --global init.defaultBranch main
+      git config --global pull.rebase true
+      git config --global core.autocrlf input
+      git config --global core.editor nvim
+      echo "Git defaults configured!"
+    fi
+    
+    echo ""
+    echo "Git configuration updated:"
+    echo "  Name:  $(git config --global user.name)"
+    echo "  Email: $(git config --global user.email)"
+  else
+    echo "Git configuration skipped (empty values provided)."
+  fi
+else
+  echo "Git configuration skipped."
+fi
+
+echo ""
 echo "Setup complete! Restart terminal or run 'zsh'."
 echo "Run 'tmux' and press Ctrl+A + I to install Tmux plugins."
 echo "Open nvim to automatically install plugins via LazyVim."

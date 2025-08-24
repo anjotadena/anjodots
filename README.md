@@ -13,7 +13,8 @@ A comprehensive dotfiles repository and setup script for WSL Ubuntu 24.04 that c
 ### Terminal & Shell
 - **Zsh + Oh My Zsh**: Professional shell with powerlevel10k theme
 - **Plugins**: git, autosuggestions, syntax-highlighting, fzf
-- **Aliases**: Convenient shortcuts for git, ls, and common commands
+- **Development shortcuts**: Quick aliases for npm/yarn, Python, Go, Docker
+- **Git configuration**: Optional setup for user name, email, and defaults
 
 ### Tmux Configuration
 - **Prefix**: Ctrl+A (easier than Ctrl+B)
@@ -50,6 +51,8 @@ After installation:
 3. Open `nvim` to automatically install plugins via LazyVim
 4. Run `:Mason` in Neovim to verify LSP/formatter installations
 
+**Note**: The setup script will optionally prompt you to configure git user information (name, email, and defaults) if not already set.
+
 ## Key Bindings
 
 ### Angular/React Development
@@ -82,6 +85,12 @@ After installation:
 - `Ctrl+A + h/j/k/l` - Navigate panes
 - `Ctrl+A + H/J/K/L` - Resize panes
 - `Ctrl+A + r` - Reload config
+
+### Development Shortcuts
+- **Node.js**: `nrd` (npm run dev), `yrs` (yarn start), `ngserve` (ng serve)
+- **Python**: `py` (python3), `serve` (http.server), `venv` (create venv)
+- **Go**: `gorun` (go run .), `gotest` (go test ./...), `gomod` (go mod tidy)
+- **Docker**: `dcup` (docker-compose up), `dcdown` (down), `dps` (docker ps)
 
 ## Project Structure
 
