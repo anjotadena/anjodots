@@ -1,3 +1,6 @@
+-- Disable LazyVim import order check since we handle this properly
+vim.g.lazyvim_check_order = false
+
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
 if not vim.loop.fs_stat(lazypath) then
   -- bootstrap lazy.nvim
@@ -14,21 +17,21 @@ vim.opt.rtp:prepend(lazypath)
 
 require("lazy").setup({
   spec = {
-    -- LazyVim core
+    -- 1. LazyVim core plugins (must be first)
     {
       "LazyVim/LazyVim",
       import = "lazyvim.config",
     },
-    -- Language support
+    
+    -- 2. LazyVim plugins.extras (second)
     { import = "lazyvim.plugins.extras.lang.typescript" },
     { import = "lazyvim.plugins.extras.lang.python" },
     { import = "lazyvim.plugins.extras.lang.go" },
-    -- Formatting and linting
     { import = "lazyvim.plugins.extras.formatting.prettier" },
     { import = "lazyvim.plugins.extras.linting.eslint" },
-    -- Debugging
     { import = "lazyvim.plugins.extras.dap.core" },
-    -- Custom plugins
+    
+    -- 3. Custom plugins (last)
     { import = "plugins" },
   },
   defaults = {

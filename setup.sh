@@ -130,8 +130,11 @@ echo "Installing LazyVim starter..."
 git clone https://github.com/LazyVim/starter ~/.config/nvim
 rm -rf ~/.config/nvim/.git
 
+# Remove the default lazy.lua to avoid conflicts
+rm -f ~/.config/nvim/lua/config/lazy.lua
+
 # Replace with our custom configs
-cp -f $DOTFILES_DIR/nvim/lua/plugins/extras.lua ~/.config/nvim/lua/plugins/
+cp -f $DOTFILES_DIR/nvim/lua/config/lazy.lua ~/.config/nvim/lua/config/lazy.lua
 cp -f $DOTFILES_DIR/nvim/lua/plugins/dev.lua ~/.config/nvim/lua/plugins/
 
 echo "LazyVim starter installed with custom development plugins"
