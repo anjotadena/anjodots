@@ -29,6 +29,7 @@ A comprehensive dotfiles repository and setup script for WSL Ubuntu 24.04 that c
 - **Formatters**: Prettier (JS/TS), Black (Python), gofumpt (Go)
 - **Linters**: ESLint, flake8
 - **Debugging**: DAP support for all languages
+- **AI Assistance**: GitHub Copilot integration with smart keybindings
 - **Custom keymaps**: Language-specific shortcuts for productivity
 
 ### Error Handling
@@ -77,6 +78,12 @@ After installation:
 - `<leader>do` - Step over
 - `<leader>di` - Step into
 - `<leader>du` - Step out
+
+### GitHub Copilot
+- `<Tab>` - Accept Copilot suggestion (in insert mode)
+- `<Ctrl>]` - Open Copilot panel
+- `<Ctrl>\` - Disable Copilot
+- `<Ctrl>[` - Enable Copilot
 
 ### Tmux
 - `Ctrl+A` - Prefix key
