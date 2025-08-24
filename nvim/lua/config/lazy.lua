@@ -2,44 +2,32 @@
 vim.g.lazyvim_check_order = false
 
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
-if not vim.loop.fs_stat(lazypath) then
-  -- bootstrap lazy.nvim
-  vim.fn.system({
-    "git",
-    "clone",
-    "--filter=blob:none",
-    "https://github.com/folke/lazy.nvim.git",
-    "--branch=stable",
-    lazypath,
-  })
+if not (vim.uv or vim.loop).fs_stat(lazypath) then
+  local lazyrepo = "https://github.com/folke/lazy.nvim.git"
+  vim.fn.system({ "git", "clone", "--filter=blob:none", "--branch=stable", lazyrepo, lazypath })
 end
 vim.opt.rtp:prepend(lazypath)
 
 require("lazy").setup({
   spec = {
-    -- 1. LazyVim core plugins (must be first)
-    {
-      "LazyVim/LazyVim",
-      import = "lazyvim.config",
-    },
-    
-    -- 2. LazyVim plugins.extras (second)
+    -- Import LazyVim and its plugins
+    { "LazyVim/LazyVim", import = "lazyvim.plugins" },
+    -- Import language extras
     { import = "lazyvim.plugins.extras.lang.typescript" },
     { import = "lazyvim.plugins.extras.lang.python" },
     { import = "lazyvim.plugins.extras.lang.go" },
     { import = "lazyvim.plugins.extras.formatting.prettier" },
     { import = "lazyvim.plugins.extras.linting.eslint" },
     { import = "lazyvim.plugins.extras.dap.core" },
-    
-    -- 3. Custom plugins (last)
+    -- Import custom plugins from plugins/ directory
     { import = "plugins" },
   },
   defaults = {
     lazy = false,
     version = false,
   },
-  install = { colorscheme = { "tokyonight" } },
-  checker = { enabled = true },
+  install = { colorscheme = { "tokyonight", "habamax" } },
+  checker = { enabled = true, notify = false },
   performance = {
     rtp = {
       disabled_plugins = {
@@ -52,3 +40,6 @@ require("lazy").setup({
     },
   },
 })
+
+-- Load Copilot initialization helper
+require("config.copilot-init")

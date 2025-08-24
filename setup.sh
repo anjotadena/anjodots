@@ -127,15 +127,36 @@ fi
 
 # Clone the official LazyVim starter
 echo "Installing LazyVim starter..."
-git clone https://github.com/LazyVim/starter ~/.config/nvim
+
+# Completely remove any existing nvim config and data
+echo "Cleaning existing Neovim installation..."
+rm -rf ~/.config/nvim
+rm -rf ~/.local/share/nvim
+rm -rf ~/.local/state/nvim
+rm -rf ~/.cache/nvim
+
+echo "Cloning LazyVim starter..."
+if ! git clone https://github.com/LazyVim/starter ~/.config/nvim; then
+  echo "✗ Failed to clone LazyVim starter"
+  return 1
+fi
+
 rm -rf ~/.config/nvim/.git
 
 # Remove the default lazy.lua to avoid conflicts
 rm -f ~/.config/nvim/lua/config/lazy.lua
 
 # Replace with our custom configs
+echo "Installing custom configuration..."
 cp -f $DOTFILES_DIR/nvim/lua/config/lazy.lua ~/.config/nvim/lua/config/lazy.lua
+cp -f $DOTFILES_DIR/nvim/lua/config/copilot-init.lua ~/.config/nvim/lua/config/copilot-init.lua
 cp -f $DOTFILES_DIR/nvim/lua/plugins/dev.lua ~/.config/nvim/lua/plugins/
+
+# Ensure config files exist
+if [ ! -f ~/.config/nvim/lua/config/lazy.lua ]; then
+  echo "✗ Failed to copy lazy.lua configuration"
+  return 1
+fi
 
 echo "LazyVim starter installed with custom development plugins"
 

@@ -84,6 +84,17 @@ After installation:
 - `<Ctrl>]` - Open Copilot panel
 - `<Ctrl>\` - Disable Copilot
 - `<Ctrl>[` - Enable Copilot
+- `<leader>cs` - Copilot setup/authentication
+- `<leader>cp` - Copilot panel
+- `<leader>ce` - Copilot enable
+- `<leader>cd` - Copilot disable
+- `<leader>cS` - Copilot status
+
+**Setup Commands:**
+- `:Copilot setup` - Initial authentication with GitHub
+- `:CopilotInit` - Auto-setup helper (checks status and runs setup if needed)
+- `:CopilotCheck` - Check authentication and status
+- `:Copilot status` - Show current status and diagnostics
 
 ### Tmux
 - `Ctrl+A` - Prefix key
@@ -186,6 +197,25 @@ nvim
 :Lazy sync
 :Mason
 ```
+
+### GitHub Copilot Issues
+If Copilot commands are not found or authentication fails:
+
+```bash
+# In Neovim, run these commands:
+:CopilotCheck                    # Check current status
+:Copilot setup                   # Authenticate with GitHub (opens browser)
+:CopilotInit                     # Auto-setup helper
+
+# If still having issues, check plugin loading:
+:Lazy                           # Open plugin manager
+# Find copilot.vim and press 'I' to inspect
+
+# Manual authentication:
+:Copilot auth                   # Alternative authentication method
+```
+
+**Note**: You need a GitHub account with Copilot subscription to use this feature.
 
 ## License
 

@@ -5,11 +5,29 @@ return {
   -- GitHub Copilot
   {
     "github/copilot.vim",
-    event = "InsertEnter",
+    cmd = "Copilot",
+    event = { "InsertEnter", "VeryLazy" },
     config = function()
       vim.g.copilot_no_tab_map = true
       vim.g.copilot_assume_mapped = true
       vim.g.copilot_tab_fallback = ""
+      
+      -- Auto-setup on first load
+      vim.api.nvim_create_autocmd("VimEnter", {
+        pattern = "*",
+        callback = function()
+          vim.defer_fn(function()
+            if vim.fn.exists(":Copilot") == 2 then
+              -- Check if already authenticated
+              local status = vim.fn["copilot#Enabled"]()
+              if status == 0 then
+                print("GitHub Copilot is available. Run ':Copilot setup' to authenticate.")
+              end
+            end
+          end, 1000)
+        end,
+        once = true,
+      })
     end,
     keys = {
       {
@@ -29,6 +47,11 @@ return {
       { "<C-]>", "<cmd>Copilot panel<cr>", mode = "i", desc = "Copilot Panel" },
       { "<C-\\>", "<cmd>Copilot disable<cr>", mode = "i", desc = "Copilot Disable" },
       { "<C-[>", "<cmd>Copilot enable<cr>", mode = "i", desc = "Copilot Enable" },
+      { "<leader>cs", "<cmd>Copilot setup<cr>", desc = "Copilot Setup" },
+      { "<leader>cp", "<cmd>Copilot panel<cr>", desc = "Copilot Panel" },
+      { "<leader>ce", "<cmd>Copilot enable<cr>", desc = "Copilot Enable" },
+      { "<leader>cd", "<cmd>Copilot disable<cr>", desc = "Copilot Disable" },
+      { "<leader>cS", "<cmd>Copilot status<cr>", desc = "Copilot Status" },
     },
   },
 
@@ -90,19 +113,29 @@ return {
     "williamboman/mason.nvim",
     opts = function(_, opts)
       opts.ensure_installed = opts.ensure_installed or {}
-      vim.list_extend(opts.ensure_installed, {
-        -- Additional tools not covered by language extras
+      -- Only add packages that aren't already installed by LazyVim extras
+      local additional_tools = {
         "black",
         "flake8", 
         "gofumpt",
         "delve",
-      })
+      }
+      
+      -- Check if tools are already in the list before adding
+      for _, tool in ipairs(additional_tools) do
+        if not vim.tbl_contains(opts.ensure_installed, tool) then
+          table.insert(opts.ensure_installed, tool)
+        end
+      end
+      
+      return opts
     end,
   },
 
   -- TypeScript utilities (additional tools)
   {
     "pmizio/typescript-tools.nvim",
+    enabled = false, -- Disable to avoid conflicts with LazyVim's TypeScript setup
     dependencies = { "nvim-lua/plenary.nvim", "neovim/nvim-lspconfig" },
     opts = {},
     keys = {
